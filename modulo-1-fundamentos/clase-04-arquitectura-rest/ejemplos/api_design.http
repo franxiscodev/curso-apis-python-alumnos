@@ -1,0 +1,187 @@
+# =============================================================================
+# Ejemplos de Diseño de API REST
+# =============================================================================
+# Este archivo muestra ejemplos de requests HTTP bien diseñados.
+# NOTA: Estos ejemplos no funcionarán hasta tener un servidor (Clase 06).
+# Úsalos como referencia de diseño.
+# =============================================================================
+
+### Variables
+@baseUrl = http://localhost:8000/api/v1
+@contentType = application/json
+
+
+# =============================================================================
+# USUARIOS - CRUD Completo
+# =============================================================================
+
+### 1. Listar usuarios (GET colección)
+# Response esperado: 200 OK con array de usuarios
+GET {{baseUrl}}/usuarios HTTP/1.1
+Accept: {{contentType}}
+
+### 2. Listar usuarios con paginación
+# Response: 200 OK con meta de paginación
+GET {{baseUrl}}/usuarios?page=1&per_page=10 HTTP/1.1
+Accept: {{contentType}}
+
+### 3. Obtener usuario específico (GET recurso)
+# Response: 200 OK con datos del usuario
+# Response si no existe: 404 Not Found
+GET {{baseUrl}}/usuarios/1 HTTP/1.1
+Accept: {{contentType}}
+
+### 4. Crear usuario (POST)
+# Response: 201 Created con Location header
+POST {{baseUrl}}/usuarios HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Ana García",
+    "email": "ana@ejemplo.com"
+}
+
+### 5. Actualizar usuario completo (PUT)
+# Response: 200 OK con usuario actualizado
+# NOTA: PUT reemplaza TODO el recurso
+PUT {{baseUrl}}/usuarios/1 HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Ana García López",
+    "email": "ana.garcia@ejemplo.com"
+}
+
+### 6. Actualizar usuario parcial (PATCH)
+# Response: 200 OK con usuario actualizado
+# NOTA: PATCH solo actualiza campos enviados
+PATCH {{baseUrl}}/usuarios/1 HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "email": "nuevo.email@ejemplo.com"
+}
+
+### 7. Eliminar usuario (DELETE)
+# Response: 204 No Content
+DELETE {{baseUrl}}/usuarios/1 HTTP/1.1
+
+
+# =============================================================================
+# PRODUCTOS - Con filtros y ordenamiento
+# =============================================================================
+
+### 8. Listar productos
+GET {{baseUrl}}/productos HTTP/1.1
+Accept: {{contentType}}
+
+### 9. Filtrar productos por categoría
+GET {{baseUrl}}/productos?categoria=laptops HTTP/1.1
+Accept: {{contentType}}
+
+### 10. Filtrar por rango de precio
+GET {{baseUrl}}/productos?precio_min=100&precio_max=500 HTTP/1.1
+Accept: {{contentType}}
+
+### 11. Ordenar productos
+GET {{baseUrl}}/productos?ordenar=precio&direccion=asc HTTP/1.1
+Accept: {{contentType}}
+
+### 12. Combinación de filtros y paginación
+GET {{baseUrl}}/productos?categoria=laptops&precio_max=2000&ordenar=precio&page=1&per_page=20 HTTP/1.1
+Accept: {{contentType}}
+
+### 13. Crear producto
+POST {{baseUrl}}/productos HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Laptop Pro 15",
+    "precio": 1299.99,
+    "categoria": "laptops",
+    "stock": 50,
+    "descripcion": "Laptop de alto rendimiento"
+}
+
+
+# =============================================================================
+# RECURSOS ANIDADOS - Pedidos de usuario
+# =============================================================================
+
+### 14. Listar pedidos de un usuario específico
+# URI jerárquica: /usuarios/{id}/pedidos
+GET {{baseUrl}}/usuarios/1/pedidos HTTP/1.1
+Accept: {{contentType}}
+
+### 15. Crear pedido para un usuario
+POST {{baseUrl}}/usuarios/1/pedidos HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "productos": [
+        {"producto_id": 1, "cantidad": 2},
+        {"producto_id": 3, "cantidad": 1}
+    ],
+    "direccion_envio": {
+        "calle": "Calle Principal 123",
+        "ciudad": "Madrid",
+        "codigo_postal": "28001"
+    }
+}
+
+### 16. Obtener pedido específico
+GET {{baseUrl}}/pedidos/100 HTTP/1.1
+Accept: {{contentType}}
+
+### 17. Actualizar estado del pedido
+PATCH {{baseUrl}}/pedidos/100 HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "estado": "enviado"
+}
+
+
+# =============================================================================
+# BÚSQUEDA
+# =============================================================================
+
+### 18. Búsqueda general
+GET {{baseUrl}}/productos?q=laptop+gaming HTTP/1.1
+Accept: {{contentType}}
+
+
+# =============================================================================
+# AUTENTICACIÓN (Preview)
+# =============================================================================
+
+### 19. Request con token de autenticación
+GET {{baseUrl}}/usuarios/me HTTP/1.1
+Accept: {{contentType}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+
+# =============================================================================
+# ERRORES COMUNES - Ejemplos de respuestas esperadas
+# =============================================================================
+
+### 20. Request que genera 400 Bad Request
+# JSON malformado
+POST {{baseUrl}}/usuarios HTTP/1.1
+Content-Type: {{contentType}}
+
+{nombre: "sin comillas"}
+
+### 21. Request que genera 422 Unprocessable Entity
+# Datos válidos sintácticamente pero semánticamente incorrectos
+POST {{baseUrl}}/usuarios HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "nombre": "",
+    "email": "no-es-un-email"
+}
+
+### 22. Request a recurso inexistente (404)
+GET {{baseUrl}}/usuarios/99999 HTTP/1.1
+Accept: {{contentType}}

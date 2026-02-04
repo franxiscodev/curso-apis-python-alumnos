@@ -1,0 +1,157 @@
+# ============================================
+# CURSO APIs PYTHON - .gitignore
+# ============================================
+
+# --------------------------------------------
+# Notas personales (no compartir en repo)
+# --------------------------------------------
+notas/
+apuntes/
+personal/
+drafts/
+material/
+
+# --------------------------------------------
+# Python
+# --------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# UV
+.uv/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+wheels/
+pip-wheel-metadata/
+
+# --------------------------------------------
+# Testing / Coverage
+# --------------------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# --------------------------------------------
+# Type checking / Linting
+# --------------------------------------------
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyre/
+
+# --------------------------------------------
+# IDEs y Editores
+# --------------------------------------------
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# VS Code (mantener solo configuraciones compartidas)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# --------------------------------------------
+# Environment variables y secrets
+# --------------------------------------------
+.env
+.env.*
+!.env.example
+*.env
+secrets/
+credentials/
+*.pem
+*.key
+
+# --------------------------------------------
+# Logs y temporales
+# --------------------------------------------
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.swp
+tmp/
+temp/
+
+# --------------------------------------------
+# OS específicos
+# --------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.lnk
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# --------------------------------------------
+# Databases locales
+# --------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+
+# --------------------------------------------
+# Docker
+# --------------------------------------------
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+
+# --------------------------------------------
+# Jupyter Notebooks
+# --------------------------------------------
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# --------------------------------------------
+# Cache de herramientas
+# --------------------------------------------
+.cache/
+*.cache
+
+# --------------------------------------------
+# Archivos generados en el curso
+# --------------------------------------------
+# Uploads de usuarios
+uploads/
+# Archivos de sesión
+sessions/
+# Redis dump
+dump.rdb

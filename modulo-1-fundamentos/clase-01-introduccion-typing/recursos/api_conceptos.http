@@ -1,0 +1,216 @@
+# =============================================================================
+# Archivo: api_conceptos.http
+# Clase 01: Introducción a APIs y Type Hints
+# =============================================================================
+#
+# Este archivo muestra la ESTRUCTURA de peticiones HTTP REST.
+# AÚN NO tenemos servidor - esto es una PREVIEW de lo que construiremos.
+#
+# REQUISITOS:
+# - VS Code con extensión "REST Client" (humao.rest-client)
+# - Alternativamente: Thunder Client (rangav.vscode-thunder-client)
+#
+# CÓMO USAR:
+# 1. Instala la extensión REST Client en VS Code
+# 2. Haz clic en "Send Request" que aparece sobre cada petición
+# 3. En Clase 05+ podrás ejecutar estas peticiones contra tu API real
+#
+# =============================================================================
+
+### ----------------------------------------------------------------------------
+### VARIABLES DE ENTORNO
+### Estas variables se reutilizan en todas las peticiones
+### ----------------------------------------------------------------------------
+
+@baseUrl = http://localhost:8000
+@apiVersion = v1
+@contentType = application/json
+
+### ============================================================================
+### MÉTODO GET - Obtener/Leer recursos
+### ============================================================================
+### GET es IDEMPOTENTE: llamarlo N veces produce el mismo resultado
+### No modifica datos en el servidor
+
+### Listar todos los usuarios
+### GET /usuarios → Retorna array de usuarios
+GET {{baseUrl}}/api/{{apiVersion}}/usuarios
+
+### Obtener un usuario específico por ID
+### GET /usuarios/1 → Retorna un usuario o 404
+GET {{baseUrl}}/api/{{apiVersion}}/usuarios/1
+
+### Obtener usuario con query parameters (filtros)
+### GET /usuarios?activo=true&limite=10
+GET {{baseUrl}}/api/{{apiVersion}}/usuarios?activo=true&limite=10
+
+### ============================================================================
+### MÉTODO POST - Crear recursos nuevos
+### ============================================================================
+### POST NO es idempotente: cada llamada puede crear un recurso nuevo
+### Envía datos en el BODY de la petición
+
+### Crear un nuevo usuario
+### POST /usuarios + body JSON → Retorna usuario creado con ID
+POST {{baseUrl}}/api/{{apiVersion}}/usuarios
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Ana García",
+    "email": "ana@ejemplo.com",
+    "edad": 28
+}
+
+### Crear otro usuario (observa la estructura del JSON)
+POST {{baseUrl}}/api/{{apiVersion}}/usuarios
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Carlos López",
+    "email": "carlos@ejemplo.com",
+    "edad": 35,
+    "activo": true
+}
+
+### ============================================================================
+### MÉTODO PUT - Actualizar recurso COMPLETO (reemplazar)
+### ============================================================================
+### PUT es IDEMPOTENTE: enviar los mismos datos N veces = mismo resultado
+### Debes enviar TODOS los campos del recurso
+
+### Actualizar usuario completo (reemplaza todo el recurso)
+### PUT /usuarios/1 + body completo
+PUT {{baseUrl}}/api/{{apiVersion}}/usuarios/1
+Content-Type: {{contentType}}
+
+{
+    "nombre": "Ana García López",
+    "email": "ana.garcia@ejemplo.com",
+    "edad": 29,
+    "activo": true
+}
+
+### ============================================================================
+### MÉTODO PATCH - Actualizar recurso PARCIAL
+### ============================================================================
+### PATCH permite enviar SOLO los campos que quieres modificar
+### Más eficiente que PUT cuando solo cambias un campo
+
+### Actualizar solo el email del usuario
+### PATCH /usuarios/1 + campos parciales
+PATCH {{baseUrl}}/api/{{apiVersion}}/usuarios/1
+Content-Type: {{contentType}}
+
+{
+    "email": "nuevo.email@ejemplo.com"
+}
+
+### Desactivar usuario (solo cambia un campo)
+PATCH {{baseUrl}}/api/{{apiVersion}}/usuarios/1
+Content-Type: {{contentType}}
+
+{
+    "activo": false
+}
+
+### ============================================================================
+### MÉTODO DELETE - Eliminar recursos
+### ============================================================================
+### DELETE es IDEMPOTENTE: eliminar algo que no existe = OK (o 404)
+### Generalmente no requiere body
+
+### Eliminar un usuario
+### DELETE /usuarios/1 → Retorna 204 No Content o 200 OK
+DELETE {{baseUrl}}/api/{{apiVersion}}/usuarios/1
+
+### ============================================================================
+### CÓDIGOS DE ESTADO HTTP - Respuestas esperadas
+### ============================================================================
+#
+# 2xx - ÉXITO
+# -----------
+# 200 OK              → Petición exitosa (GET, PUT, PATCH)
+# 201 Created         → Recurso creado (POST)
+# 204 No Content      → Éxito sin contenido (DELETE)
+#
+# 4xx - ERROR DEL CLIENTE
+# -----------------------
+# 400 Bad Request     → Datos inválidos en la petición
+# 401 Unauthorized    → No autenticado
+# 403 Forbidden       → Autenticado pero sin permisos
+# 404 Not Found       → Recurso no existe
+# 422 Unprocessable   → Datos válidos pero no procesables
+#
+# 5xx - ERROR DEL SERVIDOR
+# ------------------------
+# 500 Internal Error  → Error inesperado del servidor
+# 503 Service Unavail → Servidor no disponible
+#
+### ============================================================================
+
+### ============================================================================
+### EJEMPLOS DE RESPUESTAS ESPERADAS (para referencia)
+### ============================================================================
+
+# GET /usuarios/1 → 200 OK
+# {
+#     "id": 1,
+#     "nombre": "Ana García",
+#     "email": "ana@ejemplo.com",
+#     "edad": 28,
+#     "activo": true,
+#     "creado_en": "2025-01-18T10:30:00Z"
+# }
+
+# POST /usuarios → 201 Created
+# {
+#     "id": 3,
+#     "nombre": "Nuevo Usuario",
+#     "email": "nuevo@ejemplo.com",
+#     ...
+# }
+
+# GET /usuarios/999 → 404 Not Found
+# {
+#     "detail": "Usuario no encontrado"
+# }
+
+# POST /usuarios (email inválido) → 422 Unprocessable Entity
+# {
+#     "detail": [
+#         {
+#             "loc": ["body", "email"],
+#             "msg": "value is not a valid email address",
+#             "type": "value_error.email"
+#         }
+#     ]
+# }
+
+### ============================================================================
+### RELACIÓN CON TYPE HINTS (conexión con la clase)
+### ============================================================================
+#
+# Los TYPE HINTS en Python definen la ESTRUCTURA de estos datos.
+#
+# Este JSON:
+# {
+#     "nombre": "Ana García",
+#     "email": "ana@ejemplo.com",
+#     "edad": 28
+# }
+#
+# Se representa en Python como:
+#
+# class Usuario(TypedDict):
+#     nombre: str
+#     email: str
+#     edad: int
+#
+# O con Pydantic (Módulo 2):
+#
+# class Usuario(BaseModel):
+#     nombre: str
+#     email: str
+#     edad: int
+#
+### ============================================================================
