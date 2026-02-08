@@ -11,7 +11,7 @@ Material del curso de desarrollo de APIs con Python y FastAPI.
 
 ```bash
 # Clonar el repositorio
-git clone <url-del-repositorio>
+git clone https://github.com/franxiscodev/curso-apis-python-alumnos.git
 cd curso-apis-python-alumnos
 
 # Instalar dependencias con uv

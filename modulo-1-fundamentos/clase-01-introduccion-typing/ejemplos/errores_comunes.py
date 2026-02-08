@@ -13,6 +13,8 @@ Nota: Ejecuta `python -m mypy errores_comunes.py` para ver los errores detectado
 # =============================================================================
 
 # ❌ INCORRECTO - None no es un tipo válido para retorno
+
+
 def buscar_usuario_mal(user_id: int) -> None:
     """Esto dice que SIEMPRE retorna None, no que PUEDE retornar None."""
     if user_id == 1:
