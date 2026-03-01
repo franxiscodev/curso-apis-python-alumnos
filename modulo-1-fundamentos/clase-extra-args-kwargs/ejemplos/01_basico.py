@@ -25,7 +25,7 @@ def sumar_todo(*numeros):
 
 # Llamar con diferente cantidad de argumentos
 print("\nsumar_todo(1, 2, 3):")
-resultado = sumar_todo()
+resultado = sumar_todo(1, 2, 3)
 print(f"  Resultado: {resultado}")  # 6
 
 print("\nsumar_todo(10, 20):")

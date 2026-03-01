@@ -1,6 +1,6 @@
 """
 Setup y Modelos SQLAlchemy 2.0
-===============================
+===============================+
 Configuración del engine, Base y definición de modelos.
 
 Ejecutar:
@@ -98,6 +98,9 @@ if __name__ == "__main__":
         print("\nOrdenados por precio (desc):")
         for p in por_precio:
             print(f"  {p.nombre}: ${p.precio}")
+
+    # Cerrar el engine para liberar el archivo
+    engine.dispose()
 
     # Limpiar archivo de ejemplo
     import os

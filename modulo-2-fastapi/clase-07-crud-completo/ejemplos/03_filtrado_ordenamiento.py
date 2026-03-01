@@ -107,7 +107,8 @@ def listar_empleados(
 
     # Aplicar filtros
     if departamento:
-        resultados = [e for e in resultados if e["departamento"] == departamento]
+        resultados = [
+            e for e in resultados if e["departamento"] == departamento]
 
     if activo is not None:
         resultados = [e for e in resultados if e["activo"] == activo]

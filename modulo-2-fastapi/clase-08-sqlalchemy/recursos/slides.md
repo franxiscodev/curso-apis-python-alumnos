@@ -70,7 +70,7 @@ class Producto(Base):
     __tablename__ = "productos"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    nombre: Mapped[str] = mapped_column(String(100))
+    nombre: Mapped[str] = mapped_column(String(45))
     precio: Mapped[float]
     stock: Mapped[int] = mapped_column(default=0)
     descripcion: Mapped[str | None] = mapped_column(default=None)

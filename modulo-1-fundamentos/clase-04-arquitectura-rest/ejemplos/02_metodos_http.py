@@ -157,7 +157,8 @@ class ProductoService:
             id=id,
             nombre=datos["nombre"],
             precio=datos["precio"],
-            descripcion=datos.get("descripcion", ""),  # Si no viene, queda vacío
+            # Si no viene, queda vacío
+            descripcion=datos.get("descripcion", ""),
             actualizado_en=datetime.now()
         )
         self._productos[id] = producto
@@ -219,7 +220,8 @@ def demo_put_vs_patch():
         # descripcion NO enviada - quedará vacía
     })
     print(f"Después de PUT: {producto_put}")
-    print(f"  Descripción: '{producto_put.descripcion}' (vacía porque no se envió)")
+    print(
+        f"  Descripción: '{producto_put.descripcion}' (vacía porque no se envió)")
 
     # Recrear para demo PATCH
     service.crear({
@@ -235,7 +237,8 @@ def demo_put_vs_patch():
         # nombre y descripcion NO enviados - mantienen valor actual
     })
     print(f"Después de PATCH: {producto_patch}")
-    print(f"  Descripción: '{producto_patch.descripcion}' (mantiene valor original)")
+    print(
+        f"  Descripción: '{producto_patch.descripcion}' (mantiene valor original)")
 
 
 # =============================================================================

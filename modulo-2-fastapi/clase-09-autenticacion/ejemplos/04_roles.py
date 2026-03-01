@@ -18,16 +18,35 @@ from datetime import timedelta, timezone, datetime
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
+import bcrypt  # Cambiado: de passlib a bcrypt
 
 app = FastAPI(title="Roles Demo", version="1.0.0")
 
 SECRET_KEY = "clave-secreta-de-desarrollo"
 ALGORITHM = "HS256"
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Eliminado pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+
+# =============================================================================
+# FUNCIONES DE HASHING
+# =============================================================================
+
+def hash_password(password: str) -> str:
+    """Hashea una contraseña usando bcrypt."""
+    password_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hash_bytes = bcrypt.hashpw(password_bytes, salt)
+    return hash_bytes.decode('utf-8')
+
+
+def verify_password(password_plain: str, password_hash: str) -> bool:
+    """Verifica una contraseña contra su hash."""
+    password_bytes = password_plain.encode('utf-8')
+    hash_bytes = password_hash.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hash_bytes)
 
 
 # =============================================================================
@@ -45,15 +64,15 @@ class UsuarioResponse(BaseModel):
 usuarios_db: dict[str, dict] = {
     "admin": {
         "username": "admin", "nombre": "Admin",
-        "password_hash": pwd_context.hash("admin123"), "rol": "admin"
+        "password_hash": hash_password("admin123"), "rol": "admin"  # Cambiado
     },
     "editor": {
         "username": "editor", "nombre": "Editor",
-        "password_hash": pwd_context.hash("editor123"), "rol": "editor"
+        "password_hash": hash_password("editor123"), "rol": "editor"  # Cambiado
     },
     "lector": {
         "username": "lector", "nombre": "Lector",
-        "password_hash": pwd_context.hash("lector123"), "rol": "lector"
+        "password_hash": hash_password("lector123"), "rol": "lector"  # Cambiado
     },
 }
 
@@ -102,7 +121,7 @@ def requiere_rol(*roles_permitidos: str):
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """Login."""
     usuario = usuarios_db.get(form_data.username)
-    if not usuario or not pwd_context.verify(form_data.password, usuario["password_hash"]):
+    if not usuario or not verify_password(form_data.password, usuario["password_hash"]):  # Cambiado
         raise HTTPException(status_code=401, detail="Credenciales incorrectas")
     token = crear_token({"sub": usuario["username"]})
     return {"access_token": token, "token_type": "bearer"}

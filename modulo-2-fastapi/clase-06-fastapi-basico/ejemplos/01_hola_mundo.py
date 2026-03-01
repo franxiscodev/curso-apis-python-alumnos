@@ -23,7 +23,7 @@ from fastapi import FastAPI
 
 # Instancia principal de FastAPI
 app = FastAPI(
-    title="Mi Primera API",
+    title="Mi Primera API mi titulo",
     description="API de ejemplo para aprender FastAPI",
     version="1.0.0"
 )
@@ -41,7 +41,7 @@ def raiz():
 
     Retorna un mensaje de bienvenida.
     """
-    return {"mensaje": "¡Hola, FastAPI!"}
+    return {"mensaje": "CHAU, FastAPI!"}
 
 
 @app.get("/saludo")

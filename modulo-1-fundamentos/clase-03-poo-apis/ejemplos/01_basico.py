@@ -52,7 +52,7 @@ class Usuario:
 
     def __str__(self) -> str:
         """Representación para usuarios."""
-        return f"{self.nombre} <{self.email}>"
+        return f"Soy {self.nombre} y mi email es:<{self.email}>"
 
     def __eq__(self, other: object) -> bool:
         """Comparación por igualdad (basada en id)."""

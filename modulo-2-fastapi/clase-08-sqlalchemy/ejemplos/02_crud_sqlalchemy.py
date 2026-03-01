@@ -75,7 +75,7 @@ def listar_contactos(session: Session, nombre: str | None = None) -> list[Contac
 
 
 def actualizar_contacto(session: Session, contacto_id: int,
-                         **campos) -> Contacto | None:
+                        **campos) -> Contacto | None:
     """UPDATE: Actualizar campos de un contacto."""
     contacto = session.get(Contacto, contacto_id)
     if not contacto:
@@ -107,9 +107,10 @@ if __name__ == "__main__":
     with Session(engine) as db:
         # CREATE
         print("=== CREAR ===")
-        c1 = crear_contacto(db, "Ana García", "ana@ejemplo.com", "600111222")
-        c2 = crear_contacto(db, "Luis Pérez", "luis@ejemplo.com")
-        c3 = crear_contacto(db, "María López", "maria@ejemplo.com", "600333444")
+        c1 = crear_contacto(db, "Ana García", "ana3@ejemplo.com", "600111222")
+        c2 = crear_contacto(db, "Luis Pérez", "luis15@ejemplo.com")
+        c3 = crear_contacto(db, "María López",
+                            "maria@ejemplo.com", "600333444")
         print(f"Creados: {c1}, {c2}, {c3}")
 
         # READ
@@ -133,6 +134,9 @@ if __name__ == "__main__":
         eliminado = eliminar_contacto(db, 3)
         print(f"Eliminado ID 3: {eliminado}")
         print(f"Total restante: {len(listar_contactos(db))}")
+
+    # Cerrar el engine para liberar el archivo
+    # engine.dispose()
 
     import os
     os.remove("ejemplo_02.db")

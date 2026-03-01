@@ -18,7 +18,7 @@ from datetime import timedelta, timezone, datetime
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 from pydantic import BaseModel
 
 app = FastAPI(title="OAuth2 Demo", version="1.0.0")
@@ -26,8 +26,24 @@ app = FastAPI(title="OAuth2 Demo", version="1.0.0")
 SECRET_KEY = "clave-secreta-de-desarrollo"
 ALGORITHM = "HS256"
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+# =============================================================================
+# FUNCIONES DE HASHING (nuevas)
+# =============================================================================
+
+def hash_password(password: str) -> str:
+    """Hashea una contraseña usando bcrypt."""
+    password_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hash_bytes = bcrypt.hashpw(password_bytes, salt)
+    return hash_bytes.decode('utf-8')
+
+def verify_password(password_plain: str, password_hash: str) -> bool:
+    """Verifica una contraseña contra su hash."""
+    password_bytes = password_plain.encode('utf-8')
+    hash_bytes = password_hash.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hash_bytes)
 
 
 # =============================================================================
@@ -47,13 +63,13 @@ usuarios_db: dict[str, dict] = {
     "admin": {
         "username": "admin",
         "nombre": "Administrador",
-        "password_hash": pwd_context.hash("admin123"),
+        "password_hash": hash_password("admin123"),
         "rol": "admin"
     },
     "usuario1": {
         "username": "usuario1",
         "nombre": "Ana García",
-        "password_hash": pwd_context.hash("pass123"),
+        "password_hash": hash_password("pass123"),
         "rol": "usuario"
     }
 }
@@ -67,7 +83,7 @@ usuarios_db: dict[str, dict] = {
 def autenticar_usuario(username: str, password: str) -> dict | None:
     """Verifica credenciales y retorna usuario o None."""
     usuario = usuarios_db.get(username)
-    if not usuario or not pwd_context.verify(password, usuario["password_hash"]):
+    if not usuario or not verify_password(password, usuario["password_hash"]):
         return None
     return usuario
 

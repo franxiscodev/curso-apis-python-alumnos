@@ -23,6 +23,8 @@ mi_funcion = saludar
 print(mi_funcion("Ana"))  # Hola, Ana
 
 # Las funciones se pueden pasar como argumentos
+
+
 def ejecutar_funcion(func, argumento):
     """Ejecuta una función con un argumento."""
     return func(argumento)
@@ -142,5 +144,6 @@ if __name__ == "__main__":
     print(f"Usuario creado: {usuario}")
 
     print("\n--- Llamada con kwargs ---")
-    usuario2 = crear_usuario(nombre="Carlos", email="carlos@ejemplo.com", activo=False)
+    usuario2 = crear_usuario(
+        nombre="Carlos", email="carlos@ejemplo.com", activo=False)
     print(f"Usuario creado: {usuario2}")

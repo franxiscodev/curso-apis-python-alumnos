@@ -27,7 +27,8 @@ footer: 'Curso APIs Python - Módulo 1'
 1. **Cliente-Servidor**: Separación de responsabilidades
 2. **Sin Estado**: Cada request contiene toda la información
 3. **Cacheable**: Responses pueden ser cacheadas
-4. **Interfaz Uniforme**: URIs, métodos HTTP estándar
+4. **Interfaz Uniforme**: URIs, métodos HTTP estándar. 
+**HATEOAS** (Hypermedia as the Engine of Application State )
 5. **Sistema en Capas**: Intermediarios transparentes
 6. **Código Bajo Demanda**: (Opcional)
 
@@ -108,6 +109,7 @@ DELETE /api/v1/borrarUsuario/123
 GET /api/v1/productos HTTP/1.1
 GET /api/v1/productos/123 HTTP/1.1
 GET /api/v1/productos?categoria=laptops HTTP/1.1
+GET /api/v1/productos?categoria=laptops&orderby=asc&activo=true
 ```
 
 - **Seguro**: No modifica datos

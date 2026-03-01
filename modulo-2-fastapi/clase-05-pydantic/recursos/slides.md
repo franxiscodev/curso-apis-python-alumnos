@@ -156,7 +156,7 @@ class Rango(BaseModel):
 # Serialización: model_dump()
 
 ```python
-usuario = Usuario(nombre="Ana", email="ana@test.com")
+usuario = Usuario(nombre="Ana", email="ana@test.com", edad=30)
 
 # A diccionario
 data = usuario.model_dump()
@@ -232,6 +232,11 @@ pedido = Pedido(productos=[
 class UsuarioBase(BaseModel):
     nombre: str
     email: str
+
+class UsuarioCrear(BaseModel):
+    nombre: str
+    email: str 
+    password: str
 
 class UsuarioCrear(UsuarioBase):
     password: str

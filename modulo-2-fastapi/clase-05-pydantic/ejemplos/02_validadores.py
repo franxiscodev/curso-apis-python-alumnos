@@ -5,7 +5,7 @@ Ejemplo 02: Validadores Personalizados
 """
 
 from pydantic import BaseModel, Field, field_validator, model_validator, ValidationError
-
+from datetime import date
 
 # =============================================================================
 # @field_validator BÁSICO
@@ -99,7 +99,6 @@ class RangoPrecio(BaseModel):
 
 class Reservacion(BaseModel):
     """Reservación con validación de fechas."""
-    from datetime import date
 
     huesped: str
     fecha_entrada: date
@@ -110,7 +109,8 @@ class Reservacion(BaseModel):
     def validar_fechas(self) -> "Reservacion":
         """Valida que las fechas sean coherentes."""
         if self.fecha_salida <= self.fecha_entrada:
-            raise ValueError("La fecha de salida debe ser posterior a la entrada")
+            raise ValueError(
+                "La fecha de salida debe ser posterior a la entrada")
         return self
 
 
@@ -197,7 +197,6 @@ if __name__ == "__main__":
 
     # --- Reservación ---
     print("\n--- Validación de fechas ---")
-    from datetime import date
 
     reserva = Reservacion(
         huesped="Ana García",

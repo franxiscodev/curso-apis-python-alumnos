@@ -21,7 +21,6 @@ from datetime import datetime, timedelta, timezone
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import String, create_engine, select
 from sqlalchemy.orm import (
@@ -31,6 +30,7 @@ from sqlalchemy.orm import (
     mapped_column,
     sessionmaker,
 )
+import bcrypt  # Cambiado: de passlib a bcrypt
 
 
 # =============================================================================
@@ -45,12 +45,32 @@ TOKEN_EXPIRE_MINUTES = 30
 engine = create_engine("sqlite:///auth_app.db")
 SessionLocal = sessionmaker(bind=engine)
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Eliminado pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 class Base(DeclarativeBase):
     pass
+
+
+# =============================================================================
+# FUNCIONES DE HASHING
+# =============================================================================
+
+
+def hash_password(password: str) -> str:
+    """Hashea una contraseña usando bcrypt."""
+    password_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hash_bytes = bcrypt.hashpw(password_bytes, salt)
+    return hash_bytes.decode('utf-8')
+
+
+def verify_password(password_plain: str, password_hash: str) -> bool:
+    """Verifica una contraseña contra su hash."""
+    password_bytes = password_plain.encode('utf-8')
+    hash_bytes = password_hash.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hash_bytes)
 
 
 # =============================================================================
@@ -169,7 +189,8 @@ def inicializar_admin():
             admin = Usuario(
                 username="admin", nombre="Administrador",
                 email="admin@ejemplo.com",
-                password_hash=pwd_context.hash("admin123"), rol="admin"
+                password_hash=hash_password("admin123"),  # Cambiado
+                rol="admin"
             )
             db.add(admin)
             db.commit()
@@ -211,7 +232,7 @@ def registrar(datos: UsuarioRegistro, db: Session = Depends(get_db)):
     nuevo = Usuario(
         username=datos.username, nombre=datos.nombre,
         email=datos.email,
-        password_hash=pwd_context.hash(datos.password)
+        password_hash=hash_password(datos.password)  # Cambiado
     )
     db.add(nuevo)
     db.commit()
@@ -227,7 +248,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(),
         select(Usuario).where(Usuario.username == form_data.username)
     ).scalar_one_or_none()
 
-    if not usuario or not pwd_context.verify(form_data.password, usuario.password_hash):
+    if not usuario or not verify_password(form_data.password, usuario.password_hash):  # Cambiado
         raise HTTPException(
             status_code=401, detail="Credenciales incorrectas",
             headers={"WWW-Authenticate": "Bearer"}
