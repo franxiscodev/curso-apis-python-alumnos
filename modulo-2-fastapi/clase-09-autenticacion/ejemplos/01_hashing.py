@@ -142,10 +142,14 @@ if __name__ == "__main__":
     print(f"Contraseña: {password_normal}")
     print(f"Hash 1: {hash1}")
     print(f"Hash 2: {hash2}")
-    print(f"¿Son iguales los hashes? {hash1 == hash2}")  # False (salt diferente)
+    # False (salt diferente)
+    print(f"¿Son iguales los hashes? {hash1 == hash2}")
 
     # Verificar
-    print(f"\nVerificación correcta: {verificar_password(password_normal, hash1)}")
+    print(
+        f"\nVerificación correcta: {verificar_password(password_normal, hash1)}")
+    print(
+        f"\nVerificación correcta: {verificar_password(password_normal, hash2)}")
     print(f"Verificación incorrecta: {verificar_password('otra', hash1)}")
 
     # -------------------------------------------------------------------------
@@ -156,7 +160,8 @@ if __name__ == "__main__":
 
     password_larga = "a" * 100
     bytes_count = len(password_larga.encode('utf-8'))
-    print(f"Contraseña larga: {password_larga[:20]}... ({len(password_larga)} caracteres, {bytes_count} bytes)")
+    print(
+        f"Contraseña larga: {password_larga[:20]}... ({len(password_larga)} caracteres, {bytes_count} bytes)")
 
     try:
         # Esto FALLARÁ con la versión básica
@@ -174,8 +179,10 @@ if __name__ == "__main__":
     # Probar con la misma contraseña larga
     hash_segura = hashear_password_segura(password_larga)
     print(f"Hash seguro: {hash_segura}")
-    print(f"Verificación correcta: {verificar_password_segura(password_larga, hash_segura)}")
-    print(f"Verificación incorrecta: {verificar_password_segura('otra', hash_segura)}")
+    print(
+        f"Verificación correcta: {verificar_password_segura(password_larga, hash_segura)}")
+    print(
+        f"Verificación incorrecta: {verificar_password_segura('otra', hash_segura)}")
 
     # -------------------------------------------------------------------------
     # Demostración 4: Simulación de Registro/Login
@@ -198,7 +205,8 @@ if __name__ == "__main__":
     usuario2 = Usuario("pedro@ejemplo.com", "contraseña_segura_123")
     usuarios_db[usuario2.email] = usuario2
     bytes_accent = len("contraseña_segura_123".encode('utf-8'))
-    print(f"✅ Registrado: {usuario2} (contraseña con acentos, {bytes_accent} bytes)")
+    print(
+        f"✅ Registrado: {usuario2} (contraseña con acentos, {bytes_accent} bytes)")
 
     # Usuario 3: contraseña extremadamente larga
     usuario3 = Usuario("laura@ejemplo.com", "x" * 200)
